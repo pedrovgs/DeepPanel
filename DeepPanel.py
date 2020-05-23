@@ -29,6 +29,7 @@ def load_data_set():
 def normalize(input_image, input_mask):
     input_image = tf.cast(input_image, tf.float32) / 255.0
     input_mask -= 1
+    print(input_image)
     print(input_mask)
     return input_image, input_mask
 
@@ -173,4 +174,4 @@ if __name__ == "__main__":
                               validation_data=test_dataset,
                               callbacks=[DisplayCallback()])
 
-    show_predictions(test_dataset, 1)
+    show_predictions(test_dataset, 3)
