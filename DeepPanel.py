@@ -2,6 +2,7 @@ import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
 from tensorflow_examples.models.pix2pix import pix2pix
+import os.path
 
 
 def parse_image(img_path):
@@ -106,7 +107,9 @@ if __name__ == "__main__":
     train_raw_dataset = raw_dataset['train']
     test_raw_dataset = raw_dataset['test']
     AUTOTUNE = tf.data.experimental.AUTOTUNE
-    TRAIN_LENGTH = 23
+    path = "./dataset/training/raw"
+    num_files = len([f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))])
+    TRAIN_LENGTH = num_files
     BATCH_SIZE = 4
     BUFFER_SIZE = 10
     STEPS_PER_EPOCH = TRAIN_LENGTH // BATCH_SIZE
