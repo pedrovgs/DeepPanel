@@ -13,12 +13,16 @@ def parse_image(img_path):
     mask = tf.io.read_file(mask_path)
     mask = tf.image.decode_png(mask, channels=1)
     # Transform mask colors into labels
-    mask = tf.where(mask == 29, np.dtype('uint8').type(0), mask)
-    mask = tf.where(mask == 134, np.dtype('uint8').type(1), mask)
-    mask = tf.where(mask == 149, np.dtype('uint8').type(2), mask)
     # We will assume whites and weird colors are 0 which should be assigned to the background label
     mask = tf.where(mask == 255, np.dtype('uint8').type(0), mask)
-    mask = tf.where(mask == 76, np.dtype('uint8').type(0), mask)
+    # Dark values will use label 0 for the background
+    mask = tf.where(mask == 29, np.dtype('uint8').type(0), mask)
+    # Intermediate values will act as the border with label 1.
+    mask = tf.where(mask == 76, np.dtype('uint8').type(1), mask)
+    mask = tf.where(mask == 134, np.dtype('uint8').type(1), mask)
+    # Brighter values will act as the content and we wil use label 2
+    mask = tf.where(mask == 149, np.dtype('uint8').type(2), mask)
+
     return {'image': image, 'segmentation_mask': mask}
 
 
@@ -114,7 +118,7 @@ if __name__ == "__main__":
     # Optionally show image and masks:
     for image, mask in train.take(1):
         sample_image, sample_mask = image, mask
-    #display([sample_image, sample_mask])
+    # display([sample_image, sample_mask])
 
     print("Creating the model")
     OUTPUT_CHANNELS = 3
