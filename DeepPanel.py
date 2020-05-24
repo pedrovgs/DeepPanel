@@ -12,16 +12,19 @@ def parse_image(img_path):
     mask_path = tf.strings.regex_replace(mask_path, "jpg", "png")
     mask = tf.io.read_file(mask_path)
     mask = tf.image.decode_png(mask, channels=1)
+    CONTENT_LABEL = 0
+    BACKGROUND_LABEL = 1
+    BORDER_LABEL = 2
     # Transform mask colors into labels
     # We will assume whites and weird colors are 0 which should be assigned to the background label
-    mask = tf.where(mask == 255, np.dtype('uint8').type(0), mask)
-    # Dark values will use label 0 for the background
-    mask = tf.where(mask == 29, np.dtype('uint8').type(0), mask)
-    # Intermediate values will act as the border with label 1.
-    mask = tf.where(mask == 76, np.dtype('uint8').type(1), mask)
-    mask = tf.where(mask == 134, np.dtype('uint8').type(1), mask)
-    # Brighter values will act as the content and we wil use label 2
-    mask = tf.where(mask == 149, np.dtype('uint8').type(2), mask)
+    mask = tf.where(mask == 255, np.dtype('uint8').type(BACKGROUND_LABEL), mask)
+    # Dark values will use label the background label
+    mask = tf.where(mask == 29, np.dtype('uint8').type(BACKGROUND_LABEL), mask)
+    # Intermediate values will act as the border
+    mask = tf.where(mask == 76, np.dtype('uint8').type(BORDER_LABEL), mask)
+    mask = tf.where(mask == 134, np.dtype('uint8').type(BORDER_LABEL), mask)
+    # Brighter values will act as the content
+    mask = tf.where(mask == 149, np.dtype('uint8').type(CONTENT_LABEL), mask)
 
     return {'image': image, 'segmentation_mask': mask}
 
