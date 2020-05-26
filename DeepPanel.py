@@ -5,6 +5,10 @@ from tensorflow_examples.models.pix2pix import pix2pix
 import os.path
 
 
+def contains_invalid_values(x):
+    return x != 0
+
+
 def parse_image(img_path):
     image = tf.io.read_file(img_path)
     image = tf.image.decode_jpeg(image, channels=3)
@@ -26,7 +30,6 @@ def parse_image(img_path):
     mask = tf.where(mask == 134, np.dtype('uint8').type(BORDER_LABEL), mask)
     # Brighter values will act as the content
     mask = tf.where(mask == 149, np.dtype('uint8').type(CONTENT_LABEL), mask)
-
     return {'image': image, 'segmentation_mask': mask}
 
 
@@ -43,8 +46,6 @@ def load_data_set():
 
 def normalize(input_image, input_mask):
     input_image = tf.cast(input_image, tf.float32) / 255.0
-    print(input_image)
-    print(input_mask)
     return input_image, input_mask
 
 
@@ -110,8 +111,9 @@ if __name__ == "__main__":
     path = "./dataset/training/raw"
     num_files = len([f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))])
     TRAIN_LENGTH = num_files
-    BATCH_SIZE = 4
-    BUFFER_SIZE = 10
+    print(f"Training dataset loaded with size {TRAIN_LENGTH}")
+    BATCH_SIZE = 20
+    BUFFER_SIZE = int(TRAIN_LENGTH / 3)
     STEPS_PER_EPOCH = TRAIN_LENGTH // BATCH_SIZE
 
     print("Transforming data into vectors the model can understand")
