@@ -1,9 +1,10 @@
 language: python
 python:
   - '3.7'
+before_install: 
+ - sudo apt-get install libboost-dev libboost-test-dev doxygen graphviz
 install:
   - pip install pipenv
   - pipenv install
-  - apt-get install graphviz
 script: 
   - python DeepPanel.py
