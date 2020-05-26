@@ -126,7 +126,7 @@ if __name__ == "__main__":
     # Optionally show image and masks:
     for image, mask in train.take(1):
         sample_image, sample_mask = image, mask
-    # display([sample_image, sample_mask])
+    display([sample_image, sample_mask])
 
     print("Creating the model")
     OUTPUT_CHANNELS = 3
