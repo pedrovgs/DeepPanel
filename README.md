@@ -1,5 +1,5 @@
-DeepPanel
-=========
+DeepPanel [![Build Status](https://travis-ci.com/pedrovgs/DeepPanel.svg?token=Kb2RqPaWxFZ8XPxpqvqz&branch=master)](https://travis-ci.com/pedrovgs/DeepPanel)
+==================
 
 Finding a panel inside a comic page is the hardest thing I've ever done in computer science!
 
