@@ -17,11 +17,11 @@ def parse_image(img_path):
     mask_path = tf.strings.regex_replace(mask_path, "jpg", "png")
     mask = tf.io.read_file(mask_path)
     mask = tf.image.decode_png(mask, channels=1)
-    CONTENT_LABEL = 0
-    BACKGROUND_LABEL = 1
-    BORDER_LABEL = 2
+    BACKGROUND_LABEL = 0
+    BORDER_LABEL = 1
+    CONTENT_LABEL = 2
     # Transform mask colors into labels
-    # We will assume whites and weird colors are 0 which should be assigned to the background label
+    # We will assume whites 0 which should be assigned to the background label
     mask = tf.where(mask == 255, np.dtype('uint8').type(BACKGROUND_LABEL), mask)
     # Dark values will use label the background label
     mask = tf.where(mask == 29, np.dtype('uint8').type(BACKGROUND_LABEL), mask)
@@ -51,8 +51,8 @@ def normalize(input_image, input_mask):
 
 @tf.function
 def load_image_train(datapoint):
-    input_image = tf.image.resize(datapoint['image'], (128, 128))
-    input_mask = tf.image.resize(datapoint['segmentation_mask'], (128, 128))
+    input_image = tf.image.resize_with_pad(datapoint['image'], target_height=128, target_width=128)
+    input_mask = tf.image.resize_with_pad(datapoint['segmentation_mask'], target_height=128, target_width=128)
 
     if tf.random.uniform(()) > 0.5:
         input_image = tf.image.flip_left_right(input_image)
@@ -64,8 +64,8 @@ def load_image_train(datapoint):
 
 
 def load_image_test(datapoint):
-    input_image = tf.image.resize(datapoint['image'], (128, 128))
-    input_mask = tf.image.resize(datapoint['segmentation_mask'], (128, 128))
+    input_image = tf.image.resize_with_pad(datapoint['image'], target_height=128, target_width=128)
+    input_mask = tf.image.resize_with_pad(datapoint['segmentation_mask'], target_height=128, target_width=128)
 
     input_image, input_mask = normalize(input_image, input_mask)
 

@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="124b8a2d-c78d-41f8-aa8b-3786023a02ba" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DeepPanel.py" beforeDir="false" afterPath="$PROJECT_DIR$/DeepPanel.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -23,6 +24,34 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
+  <component name="RunManager">
+    <configuration name="DeepPanel" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="DeepPanel" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/DeepPanel.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.DeepPanel" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -35,5 +64,23 @@
       <updated>1590518215504</updated>
     </task>
     <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="1385" height="219" key="GridCell.Tab.0.bottom" timestamp="1590598597002">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state width="1385" height="219" key="GridCell.Tab.0.bottom/0.23.1440.877@0.23.1440.877" timestamp="1590598597002" />
+    <state width="1385" height="219" key="GridCell.Tab.0.center" timestamp="1590598597002">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state width="1385" height="219" key="GridCell.Tab.0.center/0.23.1440.877@0.23.1440.877" timestamp="1590598597002" />
+    <state width="1385" height="219" key="GridCell.Tab.0.left" timestamp="1590598597001">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state width="1385" height="219" key="GridCell.Tab.0.left/0.23.1440.877@0.23.1440.877" timestamp="1590598597001" />
+    <state width="1385" height="219" key="GridCell.Tab.0.right" timestamp="1590598597002">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state width="1385" height="219" key="GridCell.Tab.0.right/0.23.1440.877@0.23.1440.877" timestamp="1590598597002" />
   </component>
 </project>
