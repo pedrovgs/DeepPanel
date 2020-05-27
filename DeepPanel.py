@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from tensorflow_examples.models.pix2pix import pix2pix
 import os.path
 
+IMAGE_SIZE = 224
 
 def contains_invalid_values(x):
     return x != 0
@@ -51,8 +52,8 @@ def normalize(input_image, input_mask):
 
 @tf.function
 def load_image_train(datapoint):
-    input_image = tf.image.resize_with_pad(datapoint['image'], target_height=128, target_width=128)
-    input_mask = tf.image.resize_with_pad(datapoint['segmentation_mask'], target_height=128, target_width=128)
+    input_image = tf.image.resize_with_pad(datapoint['image'], target_height=IMAGE_SIZE, target_width=IMAGE_SIZE)
+    input_mask = tf.image.resize_with_pad(datapoint['segmentation_mask'], target_height=IMAGE_SIZE, target_width=IMAGE_SIZE)
 
     if tf.random.uniform(()) > 0.5:
         input_image = tf.image.flip_left_right(input_image)
@@ -64,8 +65,8 @@ def load_image_train(datapoint):
 
 
 def load_image_test(datapoint):
-    input_image = tf.image.resize_with_pad(datapoint['image'], target_height=128, target_width=128)
-    input_mask = tf.image.resize_with_pad(datapoint['segmentation_mask'], target_height=128, target_width=128)
+    input_image = tf.image.resize_with_pad(datapoint['image'], target_height=IMAGE_SIZE, target_width=IMAGE_SIZE)
+    input_mask = tf.image.resize_with_pad(datapoint['segmentation_mask'], target_height=IMAGE_SIZE, target_width=IMAGE_SIZE)
 
     input_image, input_mask = normalize(input_image, input_mask)
 
@@ -126,11 +127,11 @@ if __name__ == "__main__":
     # Optionally show image and masks:
     for image, mask in train.take(1):
         sample_image, sample_mask = image, mask
-    display([sample_image, sample_mask])
+    # display([sample_image, sample_mask])
 
     print("Creating the model")
     OUTPUT_CHANNELS = 3
-    base_model = tf.keras.applications.MobileNetV2(input_shape=[128, 128, 3], include_top=False)
+    base_model = tf.keras.applications.MobileNetV2(input_shape=[IMAGE_SIZE, IMAGE_SIZE, 3], include_top=False)
     # Use the activations of these layers
     layer_names = [
         'block_1_expand_relu',  # 64x64
@@ -152,7 +153,7 @@ if __name__ == "__main__":
 
 
     def unet_model(output_channels):
-        inputs = tf.keras.layers.Input(shape=[128, 128, 3])
+        inputs = tf.keras.layers.Input(shape=[IMAGE_SIZE, IMAGE_SIZE, 3])
         x = inputs
 
         # Downsampling through the model
