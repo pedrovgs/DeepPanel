@@ -1,5 +1,6 @@
 from PIL import Image
 import glob
+import sys
 
 
 def adjust_pixel_values(pixels, x, y):
@@ -36,13 +37,15 @@ def contains_invalid_values(image_info):
                 adjust_pixel_values(pixels, x, y)
                 weird_colors = True
     if weird_colors:
+        print("Fixing colors...")
         image_file.save(image_info['filename'])
     return weird_colors
 
 
 if __name__ == "__main__":
     image_list = []
-    for filename in glob.glob('./dataset/training/segmentation_mask/*.png'):
+    folder = sys.argv[1] if len(sys.argv) > 1 else "./dataset/training/segmentation_mask/"
+    for filename in glob.glob(f'{folder}*.png'):
         im = Image.open(filename)
         image_list.append({'image': im, 'filename': filename})
     for image in image_list:
