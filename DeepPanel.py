@@ -107,33 +107,40 @@ class DisplayCallback(tf.keras.callbacks.Callback):
         print('\n    - Training finished for epoch {}\n'.format(epoch + 1))
 
 
+def files_in_folder(folder):
+    return len([f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))])
+
+
 if __name__ == "__main__":
     print(" - Loading data")
     raw_dataset = load_data_set()
     train_raw_dataset = raw_dataset['train']
     test_raw_dataset = raw_dataset['test']
     AUTOTUNE = tf.data.experimental.AUTOTUNE
-    path = "./dataset/training/raw"
-    num_files = len([f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))])
-    TRAIN_LENGTH = num_files
+    training_files_path = "./dataset/training/raw"
+    training_num_files = files_in_folder(training_files_path)
+    testing_files_path = "./dataset/test/raw"
+    testing_num_files = files_in_folder(testing_files_path)
+    TRAIN_LENGTH = training_num_files
+    TESTING_LENGTH = testing_num_files
     EPOCHS = 20
     BUFFER_SIZE = TRAIN_LENGTH
-    BATCH_SIZE = TRAIN_LENGTH // 5
-    STEPS_PER_EPOCH = TRAIN_LENGTH // BATCH_SIZE
+    TRAINING_BATCH_SIZE = 20
+    TESTING_BATCH_SIZE = TESTING_LENGTH
     CORES_COUNT = multiprocessing.cpu_count()
     print(" - Transforming data into vectors the model can understand")
     print(f"   - Training dataset size = {TRAIN_LENGTH}")
-    print(f"   - Batch size = {BATCH_SIZE}")
+    print(f"   - Training batch size = {TRAINING_BATCH_SIZE}")
+    print(f"   - Testing batch size = {TESTING_BATCH_SIZE}")
     print(f"   - Epochs = {EPOCHS}")
     print(f"   - Buffer size = {BUFFER_SIZE}")
-    print(f"   - Steps per epochs = {STEPS_PER_EPOCH}")
     print(f"   - Core's count = {CORES_COUNT}")
 
     train = train_raw_dataset.map(load_image_train, AUTOTUNE)
     test = test_raw_dataset.map(load_image_test)
-    train_dataset = train.cache().shuffle(BUFFER_SIZE).batch(BATCH_SIZE).repeat()
+    train_dataset = train.cache().shuffle(BUFFER_SIZE).batch(TRAINING_BATCH_SIZE)
     train_dataset = train_dataset.prefetch(buffer_size=AUTOTUNE)
-    test_dataset = test.batch(BATCH_SIZE)
+    test_dataset = test.batch(TESTING_BATCH_SIZE)
 
     # Optionally show image and masks:
     for image, mask in train.take(1):
@@ -199,7 +206,6 @@ if __name__ == "__main__":
                               epochs=EPOCHS,
                               validation_data=test_dataset,
                               use_multiprocessing=True,
-                              steps_per_epoch=STEPS_PER_EPOCH,
                               workers=CORES_COUNT,
                               callbacks=[DisplayCallback()])
     print(" - Training finished")
