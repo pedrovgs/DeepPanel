@@ -130,6 +130,7 @@ if __name__ == "__main__":
     CORES_COUNT = multiprocessing.cpu_count()
     print(" - Transforming data into vectors the model can understand")
     print(f"   - Training dataset size = {TRAIN_LENGTH}")
+    print(f"   - Testing dataset size = {TESTING_LENGTH}")
     print(f"   - Training batch size = {TRAINING_BATCH_SIZE}")
     print(f"   - Testing batch size = {TESTING_BATCH_SIZE}")
     print(f"   - Epochs = {EPOCHS}")
