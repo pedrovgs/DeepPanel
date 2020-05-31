@@ -3,8 +3,10 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 from tensorflow_examples.models.pix2pix import pix2pix
 import os.path
+import multiprocessing
 
 IMAGE_SIZE = 224
+
 
 def contains_invalid_values(x):
     return x != 0
@@ -53,7 +55,8 @@ def normalize(input_image, input_mask):
 @tf.function
 def load_image_train(datapoint):
     input_image = tf.image.resize_with_pad(datapoint['image'], target_height=IMAGE_SIZE, target_width=IMAGE_SIZE)
-    input_mask = tf.image.resize_with_pad(datapoint['segmentation_mask'], target_height=IMAGE_SIZE, target_width=IMAGE_SIZE)
+    input_mask = tf.image.resize_with_pad(datapoint['segmentation_mask'], target_height=IMAGE_SIZE,
+                                          target_width=IMAGE_SIZE)
 
     if tf.random.uniform(()) > 0.5:
         input_image = tf.image.flip_left_right(input_image)
@@ -66,7 +69,8 @@ def load_image_train(datapoint):
 
 def load_image_test(datapoint):
     input_image = tf.image.resize_with_pad(datapoint['image'], target_height=IMAGE_SIZE, target_width=IMAGE_SIZE)
-    input_mask = tf.image.resize_with_pad(datapoint['segmentation_mask'], target_height=IMAGE_SIZE, target_width=IMAGE_SIZE)
+    input_mask = tf.image.resize_with_pad(datapoint['segmentation_mask'], target_height=IMAGE_SIZE,
+                                          target_width=IMAGE_SIZE)
 
     input_image, input_mask = normalize(input_image, input_mask)
 
@@ -100,11 +104,11 @@ def show_predictions(dataset, num=1):
 
 class DisplayCallback(tf.keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
-        print('\nSample Prediction after epoch {}\n'.format(epoch + 1))
+        print('\n    - Training finished for epoch {}\n'.format(epoch + 1))
 
 
 if __name__ == "__main__":
-    print("Loading data")
+    print(" - Loading data")
     raw_dataset = load_data_set()
     train_raw_dataset = raw_dataset['train']
     test_raw_dataset = raw_dataset['test']
@@ -112,12 +116,19 @@ if __name__ == "__main__":
     path = "./dataset/training/raw"
     num_files = len([f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))])
     TRAIN_LENGTH = num_files
-    print(f"Training dataset loaded with size {TRAIN_LENGTH}")
-    BATCH_SIZE = 20
-    BUFFER_SIZE = int(TRAIN_LENGTH / 3)
+    EPOCHS = 20
+    BUFFER_SIZE = TRAIN_LENGTH
+    BATCH_SIZE = TRAIN_LENGTH // 5
     STEPS_PER_EPOCH = TRAIN_LENGTH // BATCH_SIZE
+    CORES_COUNT = multiprocessing.cpu_count()
+    print(" - Transforming data into vectors the model can understand")
+    print(f"   - Training dataset size = {TRAIN_LENGTH}")
+    print(f"   - Batch size = {BATCH_SIZE}")
+    print(f"   - Epochs = {EPOCHS}")
+    print(f"   - Buffer size = {BUFFER_SIZE}")
+    print(f"   - Steps per epochs = {STEPS_PER_EPOCH}")
+    print(f"   - Core's count = {CORES_COUNT}")
 
-    print("Transforming data into vectors the model can understand")
     train = train_raw_dataset.map(load_image_train, AUTOTUNE)
     test = test_raw_dataset.map(load_image_test)
     train_dataset = train.cache().shuffle(BUFFER_SIZE).batch(BATCH_SIZE).repeat()
@@ -129,7 +140,7 @@ if __name__ == "__main__":
         sample_image, sample_mask = image, mask
     # display([sample_image, sample_mask])
 
-    print("Creating the model")
+    print(" - Creating the model")
     OUTPUT_CHANNELS = 3
     base_model = tf.keras.applications.MobileNetV2(input_shape=[IMAGE_SIZE, IMAGE_SIZE, 3], include_top=False)
     # Use the activations of these layers
@@ -183,14 +194,13 @@ if __name__ == "__main__":
                   metrics=['accuracy'])
     tf.keras.utils.plot_model(model, show_shapes=True)
 
-    EPOCHS = 20
-    VAL_SUBSPLITS = 5
-    VALIDATION_STEPS = TRAIN_LENGTH // BATCH_SIZE // VAL_SUBSPLITS
-
-    model_history = model.fit(train_dataset, epochs=EPOCHS,
-                              steps_per_epoch=STEPS_PER_EPOCH,
-                              validation_steps=VALIDATION_STEPS,
+    print(" - Starting training stage")
+    model_history = model.fit(train_dataset,
+                              epochs=EPOCHS,
                               validation_data=test_dataset,
+                              use_multiprocessing=True,
+                              steps_per_epoch=STEPS_PER_EPOCH,
+                              workers=CORES_COUNT,
                               callbacks=[DisplayCallback()])
-
-    show_predictions(test_dataset, 3)
+    print(" - Training finished")
+    show_predictions(test_dataset, 5)
