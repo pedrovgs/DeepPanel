@@ -155,3 +155,6 @@ mnist
 # Idea
 
 .idea
+
+# Saved model
+model/*
