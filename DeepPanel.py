@@ -1,99 +1,7 @@
-import numpy as np
 import tensorflow as tf
-import matplotlib.pyplot as plt
 from tensorflow_examples.models.pix2pix import pix2pix
-import os.path
 import multiprocessing
-
-IMAGE_SIZE = 224
-
-
-def contains_invalid_values(x):
-    return x != 0
-
-
-def parse_image(img_path):
-    image = tf.io.read_file(img_path)
-    image = tf.image.decode_jpeg(image, channels=3)
-    image = tf.image.convert_image_dtype(image, tf.uint8)
-    mask_path = tf.strings.regex_replace(img_path, "raw", "segmentation_mask")
-    mask_path = tf.strings.regex_replace(mask_path, "jpg", "png")
-    mask = tf.io.read_file(mask_path)
-    mask = tf.image.decode_png(mask, channels=1)
-    BACKGROUND_LABEL = 0
-    BORDER_LABEL = 1
-    CONTENT_LABEL = 2
-    # Transform mask colors into labels
-    # We will assume whites 0 which should be assigned to the background label
-    mask = tf.where(mask == 255, np.dtype('uint8').type(BACKGROUND_LABEL), mask)
-    # Dark values will use label the background label
-    mask = tf.where(mask == 29, np.dtype('uint8').type(BACKGROUND_LABEL), mask)
-    # Intermediate values will act as the border
-    mask = tf.where(mask == 76, np.dtype('uint8').type(BORDER_LABEL), mask)
-    mask = tf.where(mask == 134, np.dtype('uint8').type(BORDER_LABEL), mask)
-    # Brighter values will act as the content
-    mask = tf.where(mask == 149, np.dtype('uint8').type(CONTENT_LABEL), mask)
-    return {'image': image, 'segmentation_mask': mask}
-
-
-def load_images_from_folder(folder):
-    return tf.data.Dataset.list_files(folder + "raw/*.jpg").map(parse_image)
-
-
-def load_data_set():
-    return {
-        'test': load_images_from_folder("./dataset/test/"),
-        'train': load_images_from_folder("./dataset/training/")
-    }
-
-
-def normalize(input_image, input_mask):
-    input_image = tf.cast(input_image, tf.float32) / 255.0
-    return input_image, input_mask
-
-
-@tf.function
-def load_image_train(datapoint):
-    input_image = tf.image.resize_with_pad(datapoint['image'], target_height=IMAGE_SIZE, target_width=IMAGE_SIZE)
-    input_mask = tf.image.resize_with_pad(datapoint['segmentation_mask'], target_height=IMAGE_SIZE,
-                                          target_width=IMAGE_SIZE)
-
-    if tf.random.uniform(()) > 0.5:
-        input_image = tf.image.flip_left_right(input_image)
-        input_mask = tf.image.flip_left_right(input_mask)
-
-    input_image, input_mask = normalize(input_image, input_mask)
-
-    return input_image, input_mask
-
-
-def load_image_test(datapoint):
-    input_image = tf.image.resize_with_pad(datapoint['image'], target_height=IMAGE_SIZE, target_width=IMAGE_SIZE)
-    input_mask = tf.image.resize_with_pad(datapoint['segmentation_mask'], target_height=IMAGE_SIZE,
-                                          target_width=IMAGE_SIZE)
-
-    input_image, input_mask = normalize(input_image, input_mask)
-
-    return input_image, input_mask
-
-
-def display(display_list):
-    plt.figure(figsize=(15, 15))
-
-    title = ['Input Image', 'True Mask', 'Predicted Mask']
-
-    for i in range(len(display_list)):
-        plt.subplot(1, len(display_list), i + 1)
-        plt.title(title[i])
-        plt.imshow(tf.keras.preprocessing.image.array_to_img(display_list[i]))
-        plt.axis('off')
-    plt.show()
-
-
-def create_mask(pred_mask):
-    pred_mask = tf.argmax(pred_mask, axis=-1)
-    pred_mask = pred_mask[..., tf.newaxis]
-    return pred_mask[0]
+from utils import display, create_mask, load_data_set, load_image_train, load_image_test, files_in_folder, IMAGE_SIZE
 
 
 def show_predictions(dataset, num=1):
@@ -107,22 +15,18 @@ class DisplayCallback(tf.keras.callbacks.Callback):
         print('\n    - Training finished for epoch {}\n'.format(epoch + 1))
 
 
-def files_in_folder(folder):
-    return len([f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))])
-
-
 if __name__ == "__main__":
     print(" - Loading data")
     raw_dataset = load_data_set()
     train_raw_dataset = raw_dataset['train']
     test_raw_dataset = raw_dataset['test']
-    AUTOTUNE = tf.data.experimental.AUTOTUNE
     training_files_path = "./dataset/training/raw"
     training_num_files = files_in_folder(training_files_path)
     testing_files_path = "./dataset/test/raw"
     testing_num_files = files_in_folder(testing_files_path)
     TRAIN_LENGTH = training_num_files
     TESTING_LENGTH = testing_num_files
+    AUTOTUNE = tf.data.experimental.AUTOTUNE
     EPOCHS = 20
     BUFFER_SIZE = TRAIN_LENGTH
     TRAINING_BATCH_SIZE = 20
@@ -142,11 +46,6 @@ if __name__ == "__main__":
     train_dataset = train.cache().shuffle(BUFFER_SIZE).batch(TRAINING_BATCH_SIZE)
     train_dataset = train_dataset.prefetch(buffer_size=AUTOTUNE)
     test_dataset = test.batch(TESTING_BATCH_SIZE)
-
-    # Optionally show image and masks:
-    for image, mask in train.take(1):
-        sample_image, sample_mask = image, mask
-    # display([sample_image, sample_mask])
 
     print(" - Creating the model")
     OUTPUT_CHANNELS = 3
@@ -209,5 +108,6 @@ if __name__ == "__main__":
                               use_multiprocessing=True,
                               workers=CORES_COUNT,
                               callbacks=[DisplayCallback()])
-    print(" - Training finished")
-    show_predictions(test_dataset, 5)
+    print(" - Training finished, saving model into ./model")
+    model.save("./model")
+    print(" - Model updated and saved")

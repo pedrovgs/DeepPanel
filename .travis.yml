@@ -8,3 +8,4 @@ install:
   - pipenv install
 script: 
   - python DeepPanel.py
+  - python DeepPanelTest.py
