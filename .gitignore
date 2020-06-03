@@ -158,3 +158,6 @@ mnist
 
 # Saved model
 model/*
+
+# Test output image
+output/
