@@ -31,13 +31,17 @@ def parse_image(img_path):
     return {'image': image, 'segmentation_mask': mask}
 
 
-def load_images_from_folder(folder):
-    return tf.data.Dataset.list_files(folder + "raw/*.jpg").map(parse_image)
+def load_images_from_folder(folder, shuffle=True):
+    files = tf.data.Dataset.list_files(folder + "raw/*.jpg", shuffle=shuffle)
+    return files.map(parse_image)
 
 
 def load_data_set():
     return {
-        'test': load_images_from_folder("./dataset/test/"),
+        # Even when shuffle is recommended we don't want to shuffle the test dataset in order to be
+        # able to easily interpret the prediction result using the order as the index and assign the
+        # prediction index to the test image position inside the test folder.
+        'test': load_images_from_folder("./dataset/test/", shuffle=False),
         'train': load_images_from_folder("./dataset/training/")
     }
 
@@ -99,12 +103,6 @@ def display(display_list):
         plt.imshow(tf.keras.preprocessing.image.array_to_img(display_list[i]))
         plt.axis('off')
     plt.show()
-
-
-def create_mask(pred_mask):
-    pred_mask = tf.argmax(pred_mask, axis=-1)
-    pred_mask = pred_mask[..., tf.newaxis]
-    return pred_mask[0]
 
 
 def files_in_folder(folder):

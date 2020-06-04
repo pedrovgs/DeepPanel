@@ -33,7 +33,7 @@ if __name__ == "__main__":
     predicted_index = 0
     for predicted_result in labeled_predictions:
         prediction_as_image = labeled_prediction_to_image(predicted_result)
-        prediction_as_image.save(f"./output/{predicted_index}.jpg")
+        prediction_as_image.save("./output/{:03d}.jpg".format(predicted_index))
         print(f"    - Image with index {predicted_index} saved.")
         predicted_index += 1
 

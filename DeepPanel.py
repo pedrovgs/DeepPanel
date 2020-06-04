@@ -1,13 +1,7 @@
 import tensorflow as tf
 from tensorflow_examples.models.pix2pix import pix2pix
 import multiprocessing
-from utils import display, create_mask, load_data_set, load_image_train, load_image_test, files_in_folder, IMAGE_SIZE
-
-
-def show_predictions(dataset, num=1):
-    for image, mask in dataset.take(num):
-        pred_mask = model.predict(image)
-        display([image[0], mask[0], create_mask(pred_mask)])
+from utils import load_data_set, load_image_train, load_image_test, files_in_folder, IMAGE_SIZE
 
 
 class DisplayCallback(tf.keras.callbacks.Callback):
