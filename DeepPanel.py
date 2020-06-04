@@ -1,3 +1,5 @@
+import os
+
 import tensorflow as tf
 from tensorflow_examples.models.pix2pix import pix2pix
 import multiprocessing
@@ -103,5 +105,8 @@ if __name__ == "__main__":
                               workers=CORES_COUNT,
                               callbacks=[DisplayCallback()])
     print(" - Training finished, saving model into ./model")
-    model.save("./model")
+    output_path = "./model"
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
+    model.save(output_path)
     print(" - Model updated and saved")
