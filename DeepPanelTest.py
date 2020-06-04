@@ -1,3 +1,4 @@
+import os
 
 from tensorflow import keras
 from DeepPanel import files_in_folder
@@ -31,9 +32,13 @@ if __name__ == "__main__":
 
     print(f" - Saving labeled images into ./output folder")
     predicted_index = 0
+    output_path = "./output/"
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
     for predicted_result in labeled_predictions:
         prediction_as_image = labeled_prediction_to_image(predicted_result)
-        prediction_as_image.save("./output/{:03d}.jpg".format(predicted_index))
+        prediction_as_image.save(f"{output_path}{predicted_index:03d}.jpg")
+        prediction_as_image.close()
         print(f"    - Image with index {predicted_index} saved.")
         predicted_index += 1
 
