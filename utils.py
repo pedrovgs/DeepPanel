@@ -3,11 +3,34 @@ import tensorflow as tf
 import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
+from IPython.display import clear_output
 
 IMAGE_SIZE = 224
 BACKGROUND_LABEL = 0
 BORDER_LABEL = 1
 CONTENT_LABEL = 2
+
+
+def display(display_list):
+    clear_output(wait=True)
+    plt.figure(figsize=(15, 15))
+
+    title = ['Input Image', 'True Mask', 'Predicted Mask']
+
+    for i in range(len(display_list)):
+        plt.subplot(1, len(display_list), i + 1)
+        plt.title(title[i])
+        plt.imshow(tf.keras.preprocessing.image.array_to_img(display_list[i]))
+        plt.axis('off')
+    plt.show()
+
+
+def show_predictions_compared_to_real_data(images, true_masks, predictions):
+    for image_index in range(len(predictions)):
+        image = images[image_index]
+        true_mask = true_masks[image_index]
+        labeled_prediction = predictions[image_index]
+        display([image, true_mask, labeled_prediction])
 
 
 def parse_image(img_path):
@@ -141,18 +164,17 @@ def compare_accuracy_per_label(true_mask, predicted_mask):
     return background_accuracy, border_accuracy, content_accuracy
 
 
-def compare_accuracy(test_dataset, predictions):
-    index = 0
+def compare_accuracy(true_masks, predictions):
     background_acc = 0.0
     border_acc = 0.0
     content_acc = 0.0
-    for image, true_mask in test_dataset:
+    for index in range(len(predictions)):
         print(f"   - Checking accuracy for image with index {index}")
-        partial_back_acc, partial_border_acc, partial_content_acc = compare_accuracy_per_label(true_mask,
+        partial_back_acc, partial_border_acc, partial_content_acc = compare_accuracy_per_label(true_masks[index],
                                                                                                predictions[index])
         background_acc += partial_back_acc
         border_acc += partial_border_acc
-        content_acc += partial_back_acc
+        content_acc += partial_content_acc
         index += 1
     pred_num = len(predictions)
     return background_acc / pred_num, border_acc / pred_num, content_acc / pred_num

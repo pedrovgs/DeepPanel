@@ -16,6 +16,10 @@ if __name__ == "__main__":
     test_raw_dataset = raw_dataset['test']
     test = test_raw_dataset.map(load_image_test)
     test_dataset = test.batch(TESTING_BATCH_SIZE)
+    for images, true_masks in test_dataset:
+        pass  # Hack needed to be able to extrac images and true masks from map datasets
+    images = images.numpy()
+    true_masks = true_masks.numpy()
     print(f" - Test data loaded for {testing_num_files} images")
 
     print(" - Prediction started")
@@ -43,7 +47,7 @@ if __name__ == "__main__":
         predicted_index += 1
 
     print(f" - Images saved. Time to check accuracy metrics per label:")
-    background_acc, border_acc, content_acc = compare_accuracy(test, labeled_predictions)
+    background_acc, border_acc, content_acc = compare_accuracy(true_masks, labeled_predictions)
     print(" - Accuracy measures per label:")
     print(f"    - Border label = {border_acc}")
     print(f"    - Content label = {content_acc}")
