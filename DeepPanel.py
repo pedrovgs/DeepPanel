@@ -3,6 +3,8 @@ import os
 import tensorflow as tf
 from tensorflow_examples.models.pix2pix import pix2pix
 import multiprocessing
+
+from metrics import iou_coef, dice_coef, border_acc, content_acc, background_acc
 from utils import load_data_set, load_image_train, load_image_test, files_in_folder, IMAGE_SIZE
 
 
@@ -94,7 +96,13 @@ if __name__ == "__main__":
     model = unet_model(OUTPUT_CHANNELS)
     model.compile(optimizer='adam',
                   loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-                  metrics=['accuracy'])
+                  metrics=[
+                      'accuracy',
+                      border_acc,
+                      content_acc,
+                      background_acc,
+                      iou_coef,
+                      dice_coef])
     tf.keras.utils.plot_model(model, show_shapes=True)
 
     print(" - Starting training stage")
