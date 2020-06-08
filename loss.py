@@ -1,18 +1,34 @@
-import tensorflow as tf
+"""
+A weighted version of categorical_crossentropy for keras (2.0.6). This lets you apply a weight to unbalanced classes.
+@url: https://gist.github.com/wassname/ce364fddfc8a025bfab4348cf5de852d
+@author: wassname
+"""
+from keras import backend as K
 
-weights = tf.constant([1, 2, 1])
 
+def weighted_categorical_crossentropy(weights):
+    """
+    A weighted version of keras.objectives.categorical_crossentropy
 
-def weight_sparse_categorical_crossentropy(y_true, y_pred):
-    # get the prediction from the final softmax layer:
-    pred_idx = tf.argmax(y_pred, axis=1, output_type=tf.int32)
+    Variables:
+        weights: numpy array of shape (C,) where C is the number of classes
 
-    # stack these so we have a tensor of [[predicted_i, actual_i], ...,] for each i in batch
-    indices = tf.stack([tf.reshape(pred_idx, (-1,)),
-                        tf.reshape(tf.cast(y_true, tf.int32), (-1,))
-                        ], axis=1)
+    Usage:
+        weights = np.array([0.5,2,10]) # Class one at 0.5, class 2 twice the normal weights, class 3 10x.
+        loss = weighted_categorical_crossentropy(weights)
+        model.compile(loss=loss,optimizer='adam')
+    """
 
-    # use tf.gather_nd() to convert indices to the appropriate weight from our matrix [w_i, ...] for each i in batch
-    batch_weights = tf.gather_nd(weights, indices)
+    weights = K.variable(weights)
 
-    return batch_weights * tf.keras.losses.sparse_categorical_crossentropy(y_true, y_pred)
+    def loss(y_true, y_pred):
+        # scale predictions so that the class probas of each sample sum to 1
+        y_pred /= K.sum(y_pred, axis=-1, keepdims=True)
+        # clip to prevent NaN's and Inf's
+        y_pred = K.clip(y_pred, K.epsilon(), 1 - K.epsilon())
+        # calc
+        loss = y_true * K.log(y_pred) * weights
+        loss = -K.sum(loss, -1)
+        return loss
+
+    return loss
