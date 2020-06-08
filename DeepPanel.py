@@ -1,10 +1,10 @@
 import os
-
+import numpy as np
 import tensorflow as tf
 from tensorflow_examples.models.pix2pix import pix2pix
 import multiprocessing
 
-from loss import weight_sparse_categorical_crossentropy
+from loss import weighted_categorical_crossentropy
 from metrics import iou_coef, dice_coef, border_acc, content_acc, background_acc
 from utils import load_data_set, load_image_train, load_image_test, files_in_folder, IMAGE_SIZE
 
@@ -30,12 +30,14 @@ if __name__ == "__main__":
     BUFFER_SIZE = TRAIN_LENGTH
     TRAINING_BATCH_SIZE = 20
     TESTING_BATCH_SIZE = TESTING_LENGTH
+    COST_MATRIX = np.array([0.25, 0.50, 0.25])
     CORES_COUNT = multiprocessing.cpu_count()
     print(" - Transforming data into vectors the model can understand")
     print(f"   - Training dataset size = {TRAIN_LENGTH}")
     print(f"   - Testing dataset size = {TESTING_LENGTH}")
     print(f"   - Training batch size = {TRAINING_BATCH_SIZE}")
     print(f"   - Testing batch size = {TESTING_BATCH_SIZE}")
+    print(f"   - Cost matrix = {COST_MATRIX}")
     print(f"   - Epochs = {EPOCHS}")
     print(f"   - Buffer size = {BUFFER_SIZE}")
     print(f"   - Core's count = {CORES_COUNT}")
@@ -93,10 +95,9 @@ if __name__ == "__main__":
 
         return tf.keras.Model(inputs=inputs, outputs=x)
 
-
     model = unet_model(OUTPUT_CHANNELS)
     model.compile(optimizer='adam',
-                  loss=weight_sparse_categorical_crossentropy,
+                  loss=weighted_categorical_crossentropy(COST_MATRIX),
                   metrics=[
                       'accuracy',
                       border_acc,
