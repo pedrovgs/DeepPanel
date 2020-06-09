@@ -1,8 +1,8 @@
 import glob
 
-from PIL import Image
+from PIL import Image, ImageOps
 
-from utils import BACKGROUND_LABEL, BORDER_LABEL, CONTENT_LABEL
+from utils import IMAGE_SIZE
 
 if __name__ == "__main__":
     background_rate = 0
@@ -14,8 +14,18 @@ if __name__ == "__main__":
     print(f"Starting training data analysis for {number_of_images} images")
     for filename in images:
         print(f"Analysing image {filename}")
-        ## TODO RESIZE
+        size = IMAGE_SIZE, IMAGE_SIZE
         image = Image.open(filename)
+        pixels = image.load()
+        width, height = image.size
+        if height >= width:
+            delta_w = height - width
+            delta_h = 0
+        else:
+            delta_w = 0
+            delta_h = width - height
+        padding = (delta_w // 2, delta_h // 2, delta_w - (delta_w // 2), delta_h - (delta_h // 2))
+        image = ImageOps.expand(image, padding).resize(size, Image.NEAREST)
         pixels = image.load()
         width, height = image.size
         number_of_pixels_per_image = width * height
@@ -25,15 +35,17 @@ if __name__ == "__main__":
         for x in range(width):
             for y in range(height):
                 rgba_info = pixels[x, y]
-                r_channel = rgba_info[BACKGROUND_LABEL]
-                g_channel = rgba_info[BORDER_LABEL]
-                b_channel = rgba_info[CONTENT_LABEL]
+                r_channel = rgba_info[0]
+                g_channel = rgba_info[1]
+                b_channel = rgba_info[2]
                 if r_channel == 255:
-                    background_counter += 1
-                elif g_channel == 255:
                     border_counter += 1
-                elif b_channel == 255:
+                elif g_channel == 255:
                     content_counter += 1
+                elif b_channel == 255:
+                    background_counter += 1
+                elif r_channel == 0 and g_channel == 0 and b_channel == 0:
+                    background_counter += 1
                 else:
                     print("ERROR: INVALID PIXEL")
         background_rate += background_counter / number_of_pixels_per_image
