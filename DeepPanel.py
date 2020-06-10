@@ -14,6 +14,7 @@ class DisplayCallback(tf.keras.callbacks.Callback):
 
 if __name__ == "__main__":
     print(" - Loading data")
+    tf.random.set_seed(11)
     raw_dataset = load_data_set()
     train_raw_dataset = raw_dataset['train']
     test_raw_dataset = raw_dataset['test']

@@ -8,6 +8,7 @@ from metrics import iou_coef, dice_coef, border_acc, background_acc, content_acc
 
 if __name__ == "__main__":
     print(" - Loading saved model")
+    tf.random.set_seed(11)
     custom_objects = {
         "border_acc": border_acc,
         "background_acc": background_acc,
