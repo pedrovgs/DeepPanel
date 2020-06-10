@@ -25,7 +25,7 @@ if __name__ == "__main__":
     TRAIN_LENGTH = training_num_files
     TESTING_LENGTH = testing_num_files
     AUTOTUNE = tf.data.experimental.AUTOTUNE
-    EPOCHS = 20
+    EPOCHS = 40
     BUFFER_SIZE = TRAIN_LENGTH
     TRAINING_BATCH_SIZE = 20
     TESTING_BATCH_SIZE = TESTING_LENGTH
