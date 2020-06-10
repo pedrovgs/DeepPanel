@@ -4,9 +4,18 @@ from tensorflow import keras
 from DeepPanel import files_in_folder
 from utils import load_data_set, load_image_test, map_prediction_to_mask, compare_accuracy, labeled_prediction_to_image
 
+from metrics import iou_coef, dice_coef, border_acc, background_acc, content_acc
+
 if __name__ == "__main__":
     print(" - Loading saved model")
-    model = keras.models.load_model("./model")
+    custom_objects = {
+        "border_acc": border_acc,
+        "background_acc": background_acc,
+        "content_acc": content_acc,
+        "iou_coef": iou_coef,
+        "dice_coef": dice_coef
+    }
+    model = keras.models.load_model("./model", custom_objects=custom_objects)
 
     print(" - Loading test data")
     testing_files_path = "./dataset/test/raw"
