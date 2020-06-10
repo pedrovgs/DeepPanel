@@ -1,7 +1,7 @@
 from keras import backend as K
 import tensorflow as tf
 
-from utils import BORDER_LABEL, CONTENT_LABEL, BACKGROUND_LABEL
+from utils import BORDER_LABEL, CONTENT_LABEL, BACKGROUND_LABEL, tf_count
 
 
 def iou_coef(y_true, y_pred, smooth=1):
@@ -16,13 +16,6 @@ def dice_coef(y_true, y_pred, smooth=1):
     union = K.sum(y_true, axis=[1, 2, 3]) + K.sum(y_pred, axis=[1, 2, 3])
     dice = K.mean((2. * intersection + smooth) / (union + smooth), axis=0)
     return dice
-
-
-def tf_count(t, val):
-    elements_equal_to_value = tf.equal(t, val)
-    as_ints = tf.cast(elements_equal_to_value, tf.int32)
-    count = tf.reduce_sum(as_ints)
-    return count
 
 
 def acc_per_label(y_true, y_pred, label):
