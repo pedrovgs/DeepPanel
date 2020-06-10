@@ -1,5 +1,6 @@
 import os
 
+import tensorflow as tf
 from tensorflow import keras
 from DeepPanel import files_in_folder
 from utils import load_data_set, load_image_test, map_prediction_to_mask, compare_accuracy, labeled_prediction_to_image
