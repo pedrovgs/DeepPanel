@@ -101,8 +101,11 @@ def load_image_train(datapoint):
         input_mask = tf.image.flip_left_right(input_mask)
 
     input_image, input_mask = normalize(input_image, input_mask)
-
-    return input_image, input_mask
+    # We can even compute the weight per label per image using tf_count in the future
+    weights = tf.where(input_mask == BACKGROUND_LABEL, np.dtype('float32').type(1), input_mask)
+    weights = tf.where(input_mask == BORDER_LABEL, np.dtype('float32').type(6), weights)
+    weights = tf.where(input_mask == CONTENT_LABEL, np.dtype('float32').type(1), weights)
+    return input_image, input_mask, weights
 
 
 def load_image_test(datapoint):
