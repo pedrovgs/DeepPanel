@@ -90,19 +90,33 @@ def map_prediction_to_mask(predicted_image):
     return np.array(predicted_mask)
 
 
+def tf_count(t, val):
+    elements_equal_to_value = tf.equal(t, val)
+    as_ints = tf.cast(elements_equal_to_value, tf.int32)
+    count = tf.reduce_sum(as_ints)
+    return count
+
+
 @tf.function
 def load_image_train(datapoint):
     input_image = tf.image.resize_with_pad(datapoint['image'], target_height=IMAGE_SIZE, target_width=IMAGE_SIZE)
     input_mask = tf.image.resize_with_pad(datapoint['segmentation_mask'], target_height=IMAGE_SIZE,
                                           target_width=IMAGE_SIZE)
-
     if tf.random.uniform(()) > 0.5:
         input_image = tf.image.flip_left_right(input_image)
         input_mask = tf.image.flip_left_right(input_mask)
-
     input_image, input_mask = normalize(input_image, input_mask)
-
-    return input_image, input_mask
+    number_of_pixels_per_image = IMAGE_SIZE * IMAGE_SIZE
+    percentage_of_background_labels = tf_count(input_mask, BACKGROUND_LABEL) / number_of_pixels_per_image
+    percentage_of_content_labels = tf_count(input_mask, CONTENT_LABEL) / number_of_pixels_per_image
+    percentage_of_border_labels = tf_count(input_mask, BORDER_LABEL) / number_of_pixels_per_image
+    background_weight = tf.cast(0.33 / percentage_of_background_labels, tf.float32)
+    content_weight = tf.cast(0.34 / percentage_of_content_labels, tf.float32)
+    border_weight = tf.cast(0.33 / percentage_of_border_labels, tf.float32)
+    weights = tf.where(input_mask == BACKGROUND_LABEL, background_weight, input_mask)
+    weights = tf.where(input_mask == BORDER_LABEL, border_weight, weights)
+    weights = tf.where(input_mask == CONTENT_LABEL, content_weight, weights)
+    return input_image, input_mask, weights
 
 
 def load_image_test(datapoint):
