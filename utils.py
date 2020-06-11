@@ -102,6 +102,9 @@ def load_image_train(datapoint):
     input_image = tf.image.resize_with_pad(datapoint['image'], target_height=IMAGE_SIZE, target_width=IMAGE_SIZE)
     input_mask = tf.image.resize_with_pad(datapoint['segmentation_mask'], target_height=IMAGE_SIZE,
                                           target_width=IMAGE_SIZE)
+    if tf.random.uniform(()) > 0.5:
+        input_image = tf.image.flip_left_right(input_image)
+        input_mask = tf.image.flip_left_right(input_mask)
     input_image, input_mask = normalize(input_image, input_mask)
     number_of_pixels_per_image = IMAGE_SIZE * IMAGE_SIZE
     percentage_of_background_labels = tf_count(input_mask, BACKGROUND_LABEL) / number_of_pixels_per_image
