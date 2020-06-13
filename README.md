@@ -13,3 +13,23 @@ Finding a panel inside a comic page is the hardest thing I've ever done in compu
 6. Create your pipenv enviornment: ``pipenv install``
 7. Start pipenv environment: ``pipenv shell``
 8. Execute the main script: ``python DeepPanel.py``
+
+## Model performance
+
+These are the metrics collected during the model training for the testing and training datasets:
+
+### Accuracy
+
+![acc](./graphs/acc.png)
+
+### Accuracy per label
+
+![acc](./graphs/acc_per_label.png)
+
+![acc](./graphs/background_acc.png)
+![acc](./graphs/border_acc.png)
+![acc](./graphs/content_acc.png)
+
+### Loss
+
+![acc](./graphs/loss.png)
