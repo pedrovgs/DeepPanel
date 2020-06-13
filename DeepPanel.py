@@ -3,7 +3,7 @@ import tensorflow as tf
 from tensorflow_examples.models.pix2pix import pix2pix
 import multiprocessing
 
-from metrics import iou_coef, dice_coef, border_acc, content_acc, background_acc
+from metrics import iou_coef, dice_coef, border_acc, content_acc, background_acc, save_model_history_metrics
 from utils import load_data_set, load_image_train, load_image_test, files_in_folder, IMAGE_SIZE
 
 
@@ -25,7 +25,7 @@ if __name__ == "__main__":
     TRAIN_LENGTH = training_num_files
     TESTING_LENGTH = testing_num_files
     AUTOTUNE = tf.data.experimental.AUTOTUNE
-    EPOCHS = 15
+    EPOCHS = 17
     BUFFER_SIZE = TRAIN_LENGTH
     TRAINING_BATCH_SIZE = 20
     TESTING_BATCH_SIZE = TESTING_LENGTH
@@ -112,6 +112,8 @@ if __name__ == "__main__":
                               use_multiprocessing=True,
                               workers=CORES_COUNT,
                               callbacks=[DisplayCallback()])
+    print(" - Training finished, saving metrics into ./graphs")
+    save_model_history_metrics(EPOCHS, model_history)
     print(" - Training finished, saving model into ./model")
     output_path = "./model"
     if not os.path.exists(output_path):
