@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+    <title>DeepPanel prediction results</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<style>
+    body {
+        display: flex;
+        min-height: 110vh;
+        flex-direction: column;
+    }
+
+    main {
+        flex: 1 0 auto;
+    }
+    th img {
+        height: 224px;
+    }
+
+
+
+</style>
+<body>
+<nav>
+    <div class="nav-wrapper indigo darken-3">
+        <a href="#" class="brand-logo left">DeepPanel</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a href="https://github.com/pedrovgs/DeepPanel">Documentation</a></li>
+        </ul>
+    </div>
+</nav>
+<main class="container">
+    <div class="section">
+        <table class="highlight responsive-table">
+            <thead>
+            <h5 class="indigo-text darken-3">Prediction results:</h5>
+            <tr>
+                <th>Page</th>
+                <th>Prediction</th>
+                <th>Mask</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for prediction in predictions -%}
+            <tr>
+                <th><a href="../dataset/test/raw/{{ prediction.page }}"><img
+                        src="../dataset/test/raw/{{ prediction.page }}"></a></th>
+                <th><a href="../output/{{ prediction.pred }}"><img
+                        src="../output/{{ prediction.pred }}"></a></th>
+                <th><a href="../dataset/test/segmentation_mask/{{ prediction.mask }}"><img
+                        src="../dataset/test/segmentation_mask/{{ prediction.mask }}"></a></th>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+<footer class="page-footer indigo darken-3">
+    <div class="container">
+        <div class="row">
+            <h5 class="white-text">Contributions</h5>
+            <p class="grey-text text-lighten-4">
+                We are trying to improve this project. Do
+                you wanna help? Feel free to propose any change or send a pull request in the <a
+                    class="grey-text text-lighten-3"
+                    href="https://github.com/pedrovgs/DeepPanel">project GitHub
+                repository.</a>
+            </p>
+        </div>
+    </div>
+
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+</body>
+</html>

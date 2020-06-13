@@ -15,6 +15,7 @@ pydot = "*"
 graphviz = "*"
 keras = "*"
 ipython = "*"
+jinja2 = "*"
 
 [requires]
 python_version = "3.7"
