@@ -4,7 +4,7 @@ from tensorflow_examples.models.pix2pix import pix2pix
 import multiprocessing
 
 from metrics import iou_coef, dice_coef, border_acc, content_acc, background_acc, save_model_history_metrics
-from utils import load_data_set, load_image_train, load_image_test, files_in_folder, IMAGE_SIZE
+from utils import load_data_set, load_image_train, load_image_test, count_files_in_folder, IMAGE_SIZE
 
 
 class DisplayCallback(tf.keras.callbacks.Callback):
@@ -19,9 +19,9 @@ if __name__ == "__main__":
     train_raw_dataset = raw_dataset['train']
     test_raw_dataset = raw_dataset['test']
     training_files_path = "./dataset/training/raw"
-    training_num_files = files_in_folder(training_files_path)
+    training_num_files = count_files_in_folder(training_files_path)
     testing_files_path = "./dataset/test/raw"
-    testing_num_files = files_in_folder(testing_files_path)
+    testing_num_files = count_files_in_folder(testing_files_path)
     TRAIN_LENGTH = training_num_files
     TESTING_LENGTH = testing_num_files
     AUTOTUNE = tf.data.experimental.AUTOTUNE
