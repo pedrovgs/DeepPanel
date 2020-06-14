@@ -2,7 +2,6 @@ import os
 import tensorflow as tf
 from tensorflow_examples.models.pix2pix import pix2pix
 import multiprocessing
-import tensorflow_model_optimization as tfmot
 
 from metrics import iou_coef, dice_coef, border_acc, content_acc, background_acc, save_model_history_metrics
 from utils import load_data_set, load_image_train, load_image_test, count_files_in_folder, IMAGE_SIZE
