@@ -16,6 +16,7 @@ graphviz = "*"
 keras = "*"
 ipython = "*"
 jinja2 = "*"
+tensorflow-model-optimization = "*"
 
 [requires]
 python_version = "3.7"
