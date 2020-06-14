@@ -143,7 +143,11 @@ def display(display_list):
 
 
 def files_in_folder(folder):
-    return len([f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))])
+    return sorted([f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))])
+
+
+def count_files_in_folder(folder):
+    return len(files_in_folder(folder))
 
 
 # TODO: This is really slow. Should we avoid index access and use iterators instead?
