@@ -9,3 +9,4 @@ install:
 script: 
   - python DeepPanel.py
   - python DeepPanelTest.py
+  - python DeepPanelMobile.py
