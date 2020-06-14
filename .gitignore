@@ -161,3 +161,6 @@ model/*
 
 # Test output image
 output/
+
+# Report output folder
+reports/
