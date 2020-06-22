@@ -5,6 +5,7 @@ if __name__ == "__main__":
     print(f" - Loading model from {export_dir}")
     converter = tf.lite.TFLiteConverter.from_saved_model(export_dir)
     converter.optimizations = [tf.lite.Optimize.DEFAULT]
+    converter.target_spec.supported_types = [tf.float16]
     print(f" - Starting model conversion")
     tflite_model = converter.convert()
     with tf.io.gfile.GFile(f"{export_dir}deepPanel.tflite", "wb") as f:
