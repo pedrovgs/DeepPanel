@@ -3,7 +3,7 @@ DeepPanel [![Build Status](https://travis-ci.com/pedrovgs/DeepPanel.svg?token=Kb
 
 Python project used to implement **comic vignettes segmentation using a machine learning method named deep learning**.
 
-DeepPanel let's you extract all the panels' location from a comic page **using a machine learning model trained in this repository. This project does not use Open CV but a deep learning model designed for image segmentation based on a [convolutional neural network named U-Net](https://en.wikipedia.org/wiki/U-Net). We've optimized our model in terms of size and performance for mobile applications.**. Powered by [TensorFlow](https://www.tensorflow.org), DeepPanel is able to find all the panels' location in less than a second. 
+DeepPanel let's you extract all the panels' location from a comic page **using a machine learning model trained in this repository. This project does not use Open CV but a deep learning model designed for image segmentation based on a [convolutional neural network named U-Net](https://en.wikipedia.org/wiki/U-Net). We've optimized our model in terms of size and performance for mobile applications.** Powered by [TensorFlow](https://www.tensorflow.org), DeepPanel is able to find all the panels' location in less than a second. 
 
 You can find this model's application for Android and iOS in these GitHub repositories:
 
@@ -56,14 +56,14 @@ Images in ``raw`` folders will be ``.jpg`` images. Images inside the ``segmentat
 * Full RGB red for border.
 * Full RGB green for panel content.
 
-<img src="art/page0.jpg" width="100"/>
-<img src="art/maskedPage0.png" width="100"/>
+<img src="art/page0.jpg" width="200"/>
+<img src="art/maskedPage0.png" width="200"/>
 
 Raw pages and masked pages have to use the same name in different folders.
 
 ## Model performance
 
-These are the metrics collected during the model training for the testing and training datasets:
+These are the metrics collected during the model training with our private dataset:
 
 ### Accuracy
 
