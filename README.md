@@ -1,4 +1,4 @@
-DeepPanel [![Build Status](https://travis-ci.com/pedrovgs/DeepPanel.svg?token=Kb2RqPaWxFZ8XPxpqvqz&branch=master)](https://travis-ci.com/pedrovgs/DeepPanel)
+DeepPanel ![Train](https://github.com/pedrovgs/DeepPanel/workflows/Train/badge.svg)
 ==================
 
 Python project used to implement **comic vignettes segmentation using a machine learning method named deep learning**.
