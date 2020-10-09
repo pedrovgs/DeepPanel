@@ -21,8 +21,8 @@ jobs:
         path: ~/.local/share/virtualenvs
         key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
     - name: Install dependencies
-        if: steps.cache-pipenv.outputs.cache-hit != 'true'
-        run: pipenv install
+      if: steps.cache-pipenv.outputs.cache-hit != 'true'
+      run: pipenv install
     - name: Train
       run: pipenv run python DeepPanel.py
     - name: Test
