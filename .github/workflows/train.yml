@@ -12,15 +12,10 @@ jobs:
     - name: Install apt-get dependencies
       run: |
         sudo apt-get install libboost-dev libboost-test-dev doxygen graphviz
-    - name: Install python dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pipenv
-        pipenv install
-        pipenv shell
+    - uses: dschep/install-pipenv-action@v1
     - name: Train
-      run: python DeepPanel.py
+      run: pipenv run DeepPanel.py
     - name: Test
-      run: python DeepPanelTest.py
+      run: pipenv run DeepPanelTest.py
     - name: Export mobile model
-      run: python DeepPanelMobile.py
+      run: pipenv run DeepPanelMobile.py
