@@ -164,3 +164,7 @@ output/
 
 # Report output folder
 reports/
+
+# Graphs output folder
+
+graphs/
