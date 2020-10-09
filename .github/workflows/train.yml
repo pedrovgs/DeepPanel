@@ -12,9 +12,17 @@ jobs:
     - name: Install apt-get dependencies
       run: |
         sudo apt-get install libboost-dev libboost-test-dev doxygen graphviz
-    - uses: dschep/install-pipenv-action@v1
+    - name: Install pipenv
+      run: |
+        python -m pip install --upgrade pipenv wheel
+    - id: cache-pipenv
+      uses: actions/cache@v1
       with:
-        version: 2018.11.26
+        path: ~/.local/share/virtualenvs
+        key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+    - name: Install dependencies
+        if: steps.cache-pipenv.outputs.cache-hit != 'true'
+        run: pipenv install
     - name: Train
       run: pipenv run python DeepPanel.py
     - name: Test
