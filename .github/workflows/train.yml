@@ -17,12 +17,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install pipenv
         pipenv install
+        pipenv shell
     - name: Train
-      run: |
-        python DeepPanel.py
+      run: python DeepPanel.py
     - name: Test
-      run: |
-        python DeepPanelTest.py
+      run: python DeepPanelTest.py
     - name: Export mobile model
-      run: |
-        python DeepPanelMobile.py
+      run: python DeepPanelMobile.py
