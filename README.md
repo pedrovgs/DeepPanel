@@ -63,22 +63,25 @@ Raw pages and masked pages have to use the same name in different folders.
 
 ## Model performance
 
-These are the metrics collected during the model training with our private dataset:
+These are the metrics collected during the model training with our private dataset composed by:
+ 
+ * 550 pages for our training dataset.
+ * 83 pages for our testing dataset. 
 
 ### Accuracy
 
-![acc](./graphs/acc.png)
+![acc](./art/acc.png)
 
 ### Accuracy per label
 
-![acc](./graphs/acc_per_label.png)
-![acc](./graphs/background_acc.png)
-![acc](./graphs/border_acc.png)
-![acc](./graphs/content_acc.png)
+![acc](./art/acc_per_label.png)
+![acc](./art/background_acc.png)
+![acc](./art/border_acc.png)
+![acc](./art/content_acc.png)
 
 ### Loss
 
-![acc](./graphs/loss.png)
+![acc](./art/loss.png)
 
 ### Do you want to contribute?
 
