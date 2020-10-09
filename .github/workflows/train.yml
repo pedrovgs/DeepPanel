@@ -14,8 +14,8 @@ jobs:
         sudo apt-get install libboost-dev libboost-test-dev doxygen graphviz
     - uses: dschep/install-pipenv-action@v1
     - name: Train
-      run: pipenv run DeepPanel.py
+      run: python DeepPanel.py
     - name: Test
-      run: pipenv run DeepPanelTest.py
+      run: python DeepPanelTest.py
     - name: Export mobile model
-      run: pipenv run DeepPanelMobile.py
+      run: python DeepPanelMobile.py
