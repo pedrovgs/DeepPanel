@@ -13,6 +13,8 @@ jobs:
       run: |
         sudo apt-get install libboost-dev libboost-test-dev doxygen graphviz
     - uses: dschep/install-pipenv-action@v1
+      with:
+        version: 2018.11.26
     - name: Train
       run: pipenv run python DeepPanel.py
     - name: Test
