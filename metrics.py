@@ -23,7 +23,7 @@ def dice_coef(y_true, y_pred, smooth=1):
 def acc_per_label(y_true, y_pred, label):
     pred_mask = tf.argmax(y_pred, axis=-1)
     pred_mask = pred_mask[..., tf.newaxis]
-    y_true = K.cast(y_true, pred_mask.dtype)
+    y_true = tf.cast(y_true, pred_mask.dtype)
     true_label_count = tf_count(y_true, label)
     properly_predicted_labels = tf.where(tf.equal(y_true, label), x=pred_mask, y=-1)
     properly_predicted_label_count = tf_count(properly_predicted_labels, label)
