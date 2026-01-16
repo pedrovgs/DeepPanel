@@ -1,22 +1,21 @@
 import os
 
-from keras import backend as K
 import tensorflow as tf
 import matplotlib.pyplot as plt
 from utils import BORDER_LABEL, CONTENT_LABEL, BACKGROUND_LABEL, tf_count
 
 
 def iou_coef(y_true, y_pred, smooth=1):
-    intersection = K.sum(K.abs(y_true * y_pred), axis=[1, 2, 3])
-    union = K.sum(y_true, [1, 2, 3]) + K.sum(y_pred, [1, 2, 3]) - intersection
-    iou = K.mean((intersection + smooth) / (union + smooth), axis=0)
+    intersection = tf.reduce_sum(tf.abs(y_true * y_pred), axis=[1, 2, 3])
+    union = tf.reduce_sum(y_true, [1, 2, 3]) + tf.reduce_sum(y_pred, [1, 2, 3]) - intersection
+    iou = tf.reduce_mean((intersection + smooth) / (union + smooth), axis=0)
     return iou
 
 
 def dice_coef(y_true, y_pred, smooth=1):
-    intersection = K.sum(y_true * y_pred, axis=[1, 2, 3])
-    union = K.sum(y_true, axis=[1, 2, 3]) + K.sum(y_pred, axis=[1, 2, 3])
-    dice = K.mean((2. * intersection + smooth) / (union + smooth), axis=0)
+    intersection = tf.reduce_sum(y_true * y_pred, axis=[1, 2, 3])
+    union = tf.reduce_sum(y_true, axis=[1, 2, 3]) + tf.reduce_sum(y_pred, axis=[1, 2, 3])
+    dice = tf.reduce_mean((2. * intersection + smooth) / (union + smooth), axis=0)
     return dice
 
 
