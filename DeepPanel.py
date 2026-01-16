@@ -117,4 +117,5 @@ if __name__ == "__main__":
     if not os.path.exists(output_path):
         os.makedirs(output_path)
     model.save(os.path.join(output_path, "model.keras"))
+    model.export(output_path)
     print(" - Model updated and saved")
