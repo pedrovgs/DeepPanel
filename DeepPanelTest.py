@@ -45,7 +45,7 @@ if __name__ == "__main__":
         "iou_coef": iou_coef,
         "dice_coef": dice_coef
     }
-    model = keras.models.load_model("./model", custom_objects=custom_objects)
+    model = keras.models.load_model("./model/model.keras", custom_objects=custom_objects)
 
     print(" - Loading test data")
     testing_files_path = "./dataset/test/raw"
