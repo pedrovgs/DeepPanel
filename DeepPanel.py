@@ -109,8 +109,6 @@ if __name__ == "__main__":
     model_history = model.fit(train_dataset,
                               epochs=EPOCHS,
                               validation_data=test_dataset,
-                              use_multiprocessing=True,
-                              workers=CORES_COUNT,
                               callbacks=[DisplayCallback()])
     print(" - Training finished, saving metrics into ./graphs")
     save_model_history_metrics(EPOCHS, model_history)
