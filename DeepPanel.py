@@ -116,5 +116,5 @@ if __name__ == "__main__":
     output_path = "./model"
     if not os.path.exists(output_path):
         os.makedirs(output_path)
-    model.save(output_path)
+    model.export(output_path)
     print(" - Model updated and saved")
